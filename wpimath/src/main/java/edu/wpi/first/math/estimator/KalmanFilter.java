@@ -97,12 +97,10 @@ public class KalmanFilter<States extends Num, Inputs extends Num, Outputs extend
       throw new IllegalArgumentException(msg);
     }
 
-    m_P = new Matrix<>(
+    m_P =
+        new Matrix<>(
             Drake.discreteAlgebraicRiccatiEquation(
-                m_discA.transpose(),
-                C.transpose(),
-                m_discQ,
-                m_discR));
+                m_discA.transpose(), C.transpose(), m_discQ, m_discR));
 
     // S = CPCᵀ + R
     var S = C.times(m_P).times(C.transpose()).plus(m_discR);
@@ -210,11 +208,11 @@ public class KalmanFilter<States extends Num, Inputs extends Num, Outputs extend
   public void correct(Matrix<Inputs, N1> u, Matrix<Outputs, N1> y) {
     final var C = m_plant.getC();
     final var D = m_plant.getD();
-    
+
     @SuppressWarnings("LocalVariableName")
     // S = CPCᵀ + R
     var S = C.times(m_P).times(C.transpose()).plus(m_discR);
-    
+
     // K = (Sᵀ.solve(CPᵀ))ᵀ
     m_K = S.transpose().solve(C.times(m_P.transpose())).transpose();
 
